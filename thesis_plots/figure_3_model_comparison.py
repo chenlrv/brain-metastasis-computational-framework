@@ -277,8 +277,10 @@ def make_figure(metrics_df, y_true, oof_dict, out_path, spread_df=None):
                fontsize=9.5, frameon=False, handlelength=1.4, columnspacing=1.4)
     ax1.grid(axis="y", linestyle="--", alpha=0.4)
     ax1.set_axisbelow(True)
+    ax1.text(-0.06, 1.12, "(a)", transform=ax1.transAxes, fontsize=15,
+             fontweight="bold", va="top", ha="right")
 
-    # ── Right: PR curves for all four classifiers overlaid ────────────────
+    # ── Right: PR curves for all five classifiers overlaid ────────────────
     ax2 = fig.add_subplot(1, 2, 2)
     for mname in MODEL_ORDER:
         oof = oof_dict[mname]
@@ -298,6 +300,8 @@ def make_figure(metrics_df, y_true, oof_dict, out_path, spread_df=None):
     ax2.set_axisbelow(True)
     ax2.set_xlim(-0.02, 1.02)
     ax2.set_ylim(metrics_df["precision"].min() - 0.05, 1.005)
+    ax2.text(-0.06, 1.12, "(b)", transform=ax2.transAxes, fontsize=15,
+             fontweight="bold", va="top", ha="right")
 
     plt.tight_layout()
     plt.savefig(out_path, dpi=300, bbox_inches="tight")

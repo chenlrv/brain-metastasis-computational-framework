@@ -75,8 +75,6 @@ axA.set_ylim(0, 118)
 axA.set_yticks([0, 25, 50, 75, 100])
 axA.legend(fontsize=10, frameon=False, loc="upper center", ncol=2)
 axA.spines[["top", "right"]].set_visible(False)
-axA.text(-0.045, 1.12, "(a)", transform=axA.transAxes, fontsize=15,
-         fontweight="bold", va="top", ha="right")
 
 # ---- (b) the same split in space -----------------------------------------------
 for i, s in enumerate(SLICES):
@@ -98,10 +96,14 @@ for i, s in enumerate(SLICES):
         ax.text(x1 - 0.9, y0 + 0.38, "1 mm", ha="center", va="bottom", fontsize=9)
         first_map = ax
 
-# (b) is placed from the axes position so it cannot land on panel (a)'s labels
-pos = first_map.get_position()
-fig.text(0.055, pos.y1 + 0.012, "(b)", fontsize=15, fontweight="bold",
-         va="bottom", ha="right")
+# Both panel labels are placed in figure coordinates, at one x taken from the
+# left edge of panel (a), so that (a) and (b) line up in the same column.
+pos_a = axA.get_position()
+pos_b = first_map.get_position()
+LABEL_X = pos_a.x0 - 0.035
+for label, y in (("(a)", pos_a.y1 + 0.012), ("(b)", pos_b.y1 + 0.012)):
+    fig.text(LABEL_X, y, label, fontsize=15, fontweight="bold",
+             va="bottom", ha="left")
 
 fig.legend(handles=[Patch(color=RED, label="Lyve1+, no canonical BAM marker"),
                     Patch(color=BLUE, label="Lyve1+ and Mrc1/Cd163+"),
