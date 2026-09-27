@@ -1,4 +1,4 @@
-# Single-Cell Spatial Transcriptomics and Graph-Based Modeling in Brain Metastasis
+# Supervised Tumor-Cell Identification and Data-Quality Assessment in Spatial Transcriptomics of Brain Metastasis
 
 Analysis code for the MSc thesis of Chen Arviv (Tel Aviv University, Shmunis School of
 Biomedicine and Cancer Research / Sagol School of Neuroscience), under the joint
@@ -83,12 +83,13 @@ distribution — in `thesis_research/pipeline/cell_qc_plots.py`
 (`run_cell_qc`, `_low_count_flag`).
 
 Produces **Figure 1** (`position_plots.py`) and the counts behind **Table 1**.
-**Figure 2** — the six-panel count-distribution grid — is rendered separately by
-`thesis_plots/make_qc_count_threshold_fig.py`, which re-derives the same cutoff from
-the raw vendor metadata and checks its per-slice cell counts against Table 1:
+**Figure 2** (per-cell QC metrics) and **Figure 3** (the six-panel count-distribution
+grid) are rendered separately; the latter re-derives the same cutoff from the raw
+vendor metadata and checks its per-slice cell counts against Table 1:
 
 ```bash
-conda run -n thesis_research python thesis_plots/make_qc_count_threshold_fig.py
+conda run -n thesis_research python thesis_plots/make_qc_metrics_overview_fig.py    # Figure 2
+conda run -n thesis_research python thesis_plots/make_qc_count_threshold_fig.py     # Figure 3
 ```
 
 ### Stage 1 — Reference-based annotation (SingleR)
@@ -102,6 +103,13 @@ Builds the three-part reference — brain structural, brain immune, and an LLC1
 carcinoma reference from GEO accession GSE103548 — and returns per-cell
 `score_brain_struct`, `score_brain_immune`, `score_tumor`, plus the predicted label.
 Tumor candidates are the cells passing the three filters in Table 3 of the thesis.
+The raw labels, the three derived sets (Figures 4–7) and the score-threshold sweep
+(Table 2) are drawn from these score tables:
+
+```bash
+conda run -n thesis_research python thesis_plots/make_fig_singler_sets.py      # Figures 4-7
+conda run -n thesis_research python thesis_plots/make_table_singler_sweep.py   # Table 2
+```
 
 ### Stage 2 — Supervised refinement of tumor candidates
 
@@ -117,39 +125,73 @@ the sham-injected control slices. Reference-class construction lives in
 
 ### Stage 3 — Final tumor calls
 
-XGBoost is applied to all candidates across the six slices; cells with
-*P*(healthy) < 0.5 are retained as refined tumor. Implemented in
-`identify_tumor_cells_revised.py`, which has **no command-line entry point** — its
-functions are called from a notebook or REPL. The same calls are reproduced
-end-to-end by `thesis_plots/figure_4_spatial_refinement.py` (Stage 5), which retrains
-the classifiers and writes the per-slice retained/rejected counts to CSV; use that
-script if you want a single runnable command for this stage.
+XGBoost (library defaults) is refit on the joint reference pool and applied to all
+candidates across the six slices; cells with *P*(tumor) > 0.5 are retained as refined
+tumor. The runnable entry point is:
+
+```bash
+conda run -n thesis_research python thesis_plots/final_xgboost_refinement.py   # Figure 15
+```
+
+It writes the per-slice retained/rejected counts to `final_xgboost_refinement.csv`.
+`thesis_plots/make_dq_fig_tumor_spatial.py` (Figure 21) refits the same model, so the
+two figures show the same 20,873 tumor cells.
 
 ### Stage 4 — Data-quality assessment
 
+Probe detection and the lineage reporters:
+
 ```bash
-Rscript score_genes/run_decontx.R                                          # ambient-RNA estimation
-conda run -n thesis_research python thesis_plots/make_detection_reliability_6slice.py
-conda run -n thesis_research python thesis_plots/make_detection_barplot_6slice.py
-conda run -n thesis_research python thesis_plots/make_reporter_6slice.py
-conda run -n thesis_research python thesis_plots/lyve1_unreliability.py
-conda run -n thesis_research python thesis_plots/lyve1_unreliability_spatial.py
-conda run -n thesis_research python thesis_plots/make_decontx_fig.py
+conda run -n thesis_research python thesis_plots/make_detection_reliability_6slice.py  # Table 4 values
+conda run -n thesis_research python thesis_plots/make_dq_fig1_detection.py             # Figure 16
+conda run -n thesis_research python thesis_plots/make_dq_fig_reporter.py               # Figure 17
+conda run -n thesis_research python thesis_plots/make_dq_fig_lyve1.py                  # Figure 18
+conda run -n thesis_research python fov_qc_slice1.py                                   # FOV QC, slide L321
 ```
 
-Quantifies each probe against the noise floor defined by the 11 negative-control
-probes, tests the lineage reporters against their expected biology, and rules out
-ambient RNA as the explanation.
+Ambient-RNA correction with DecontX. The export step writes fresh cluster labels, but
+the labels used in the thesis cannot be regenerated deterministically (whole-slice
+Leiden exceeds available memory on the large slices), so copy the committed labels
+into place before running DecontX:
+
+```bash
+conda run -n thesis_research python score_genes/run_decontx_correct.py export
+for i in 1 2 3 4 5 6; do
+  cp score_genes/decontx_clusters/slice_${i}_clusters.csv \
+     resources/cache/decontx/slice_${i}_work/clusters.csv
+done
+Rscript score_genes/run_decontx.R resources/cache/decontx
+conda run -n thesis_research python score_genes/run_decontx_correct.py assemble
+conda run -n thesis_research python thesis_plots/make_dq_fig_decontx.py                # Figure 19
+```
+
+Transcript reassignment on five slice-1 fields of view:
+
+```bash
+conda run -n thesis_research python agents/segmentation/03_filter_tx.py
+conda run -n thesis_research python agents/segmentation/04_reseg_reassign.py all
+conda run -n thesis_research python agents/segmentation/05_prior_sweep.py
+conda run -n thesis_research python thesis_plots/make_dq_fig_reassign.py              # Figure 20
+```
+
+Together these quantify each probe against the noise floor defined by the 11
+negative-control probes, test the lineage reporters against their expected biology,
+and test ambient RNA and transcript misassignment as explanations.
 
 ### Stage 5 — Thesis figures and tables
 
 ```bash
-conda run -n thesis_research python thesis_plots/figure_1_singler_calls.py       # thesis Figure 3
-conda run -n thesis_research python thesis_plots/figure_2_reference_cells.py     # not currently used
-conda run -n thesis_research python thesis_plots/figure_3_model_comparison.py    # thesis Figure 4
-conda run -n thesis_research python thesis_plots/figure_4_spatial_refinement.py  # thesis Figure 5
-conda run -n thesis_research python thesis_plots/make_nature_tables.py           # Tables 1-4 and S1
+conda run -n thesis_research python thesis_plots/figure_3_model_comparison.py    # Figure 8
+conda run -n thesis_research python thesis_plots/xgb_default_sensitivity.py      # XGBoost defaults check
+conda run -n thesis_research python thesis_plots/figure_4_spatial_refinement.py  # Figures 9-14
+conda run -n thesis_research python thesis_plots/stage1_threshold_sensitivity.py # threshold calibration
+conda run -n thesis_research python thesis_plots/make_dq_fig_tumor_spatial.py    # Figure 21
+conda run -n thesis_research python thesis_plots/make_nature_tables.py           # Tables 1, 3 and 4
 ```
+
+The Figures 9-14 and 21 scripts import from each other (`figure_4_spatial_refinement`,
+`final_xgboost_refinement`) and from the `thesis_research` package, so run them from
+the repository root with it on `PYTHONPATH`.
 
 > **Note on numbering.** The `figure_N_*.py` filenames predate the thesis figure
 > numbering and are offset from it. The mapping above and in Supplementary Table S1
@@ -185,14 +227,19 @@ Each is also flagged in Supplementary Table S1.
   `uuid4()` as `run_id` on every run, so Stage 0 figures land in a new
   `outputs/<run_id>/<sample_id>/` directory each time and cannot be cited or diffed.
   The pipeline should accept a fixed run identifier.
-- **Figure 6** has no rendering script. The calls themselves are computed by
-  `figure_4_spatial_refinement.py` and written to its CSV; the figure is the XGBoost
-  column of Figure 5 replotted by hand as a 2×3 grid. Needs a small variant of that
-  script that filters to XGBoost and re-lays out the panels.
 - **Tables 1 and 3** have their values hardcoded in `make_nature_tables.py` rather than
   read from the analysis outputs.
-- **`detection_barplot_all6.png` is stale** — the committed PNG has two panels while the
-  current script draws three; re-running it restores panel (c).
+- **Cached tumor calls predate the final model.** The `pred_tumor_XGBoost` column in
+  `resources/cache/with_tumor_prediction/` was written with the earlier tuned XGBoost
+  (20,689 tumor cells) rather than the library-default model reported in the thesis
+  (20,873). Figures 15 and 21 refit the current model and are unaffected; the
+  Chapter 3 analyses still use the cache to exclude tumor cells, so their non-tumor
+  cell counts (e.g. n = 825,428 in Figure 16 and Table 4) differ from the current calls
+  by about 200 cells (0.02%).
+- **Figure 20 values are transcribed.** `make_dq_fig_reassign.py` plots values typed
+  into the script rather than read from the sweep outputs, and the 14.4 µm reassignment
+  configuration it reports has no saved output; the committed `04_reseg_reassign.py`
+  uses a 7.2 µm candidate radius.
 - **Absolute paths.** Several `thesis_plots/` scripts hardcode `D:/thesis-research/`
   instead of resolving from `constants.py`, so they will not run elsewhere unchanged.
 - **Figure numbering** in `figure_N_*.py` filenames does not match the thesis.
@@ -219,17 +266,20 @@ After Stage 0 the headline numbers should match Table 1 of the thesis exactly:
 | Per-slice retention | 88.86 / 91.88 / 92.74 / 74.49 / 93.07 / 95.20 % |
 
 After Stage 2, out-of-fold ROC-AUC should exceed 0.99 for all five classifiers, and
-XGBoost should reach accuracy 0.972, precision 0.952, recall 0.983, F1 0.967.
+XGBoost should reach accuracy 0.970, precision 0.985, recall 0.963, F1 0.974, with
+tumor as the positive class (`figure_3_model_comparison.csv`).
 
 After Stage 3, both control slices (3 and 4) should retain **zero** tumor cells out of
 343 and 287 candidates respectively — the sharpest single check that the pipeline
-behaves as designed.
+behaves as designed — and the four tumor-bearing slices should retain 20,873 tumor
+cells in total (4,267 / 6,272 / 5,039 / 5,295).
 
 ## 7. Data and code availability
 
-Processed per-slice single-cell data and the assembled SingleR reference objects are
-available from the author on request. Raw CosMx exports (transcript tables and
-segmentation masks) are large and archived separately.
+Processed per-slice single-cell data, the assembled SingleR reference objects and the
+raw CosMx exports (transcript tables and segmentation masks) are available from the
+author on request. The cluster labels supplied to DecontX, which cannot be regenerated
+deterministically, are included in `score_genes/decontx_clusters/`.
 
 All animal procedures, tumor implantation, tissue processing, and histological
 preparation were performed by Mr. Avinoam Ratzabi, Tel Aviv University, in accordance

@@ -8,32 +8,39 @@ Note on the control sections: the Stage-2 classifier's negative class was define
 as the SingleR-called tumor cells of the sham-injected sections, so the near-
 absence of calls there is partly by construction and is not independent evidence.
 
-Run: conda run -n thesis_research python thesis_plots/make_dq_fig_tumor_spatial.py
+The tumor calls come from the current Stage-3 model, refit exactly as in
+final_xgboost_refinement.py (the source of the final-calls figure), so the two
+figures show the same 20,873 cells. The pred_tumor_XGBoost column cached in
+resources/cache/with_tumor_prediction/ predates the switch to xgboost defaults
+and is deliberately not used here.
+
+Run (repository root on PYTHONPATH):
+  conda run -n thesis_research python thesis_plots/make_dq_fig_tumor_spatial.py
 """
-import anndata as ad
 import numpy as np
 import matplotlib as mpl
 mpl.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
+from final_xgboost_refinement import fit_current_xgboost, load_slice_refit
+
 ROOT = "D:/thesis-research"
-WTP = ROOT + "/resources/cache/with_tumor_prediction/slice_{}_adata.h5ad"
 OUT = ROOT + "/thesis_plots/dq_fig_tumor_spatial.png"
 SLICES = [1, 2, 3, 4, 5, 6]
 CONTROL = {3, 4}
-TRUE = {1, "1", "1.0", True, "True", "true", "TRUE"}
 PX_UM = 0.12028
 GREY, TUM = "#DCDEE0", "#111111"
 
+model, joint_var_names = fit_current_xgboost()
 data = {}
 for s in SLICES:
-    o = ad.read_h5ad(WTP.format(s), backed="r").obs
-    t = o["pred_tumor_XGBoost"].astype(object).isin(TRUE).to_numpy()
-    x = o["CenterX_global_px"].to_numpy() * PX_UM / 1000.0
-    y = o["CenterY_global_px"].to_numpy() * PX_UM / 1000.0
+    x, y, t, _ = load_slice_refit(s, model, joint_var_names)
+    x = x * PX_UM / 1000.0
+    y = y * PX_UM / 1000.0
     data[s] = (x, y, t)
     print(f"slice {s}: {t.sum():,} tumor of {len(t):,} cells ({100*t.mean():.1f}%)")
+print(f"total: {sum(int(d[2].sum()) for d in data.values()):,} tumor cells")
 
 # common data span for every panel, so all sections share one scale and one
 # axes shape (the scale bar below is then valid for the whole figure)
@@ -57,7 +64,7 @@ for ax, s in zip(axes.ravel(), SLICES):
     ax.set_xticks([]); ax.set_yticks([])
     for sp in ax.spines.values():
         sp.set_visible(False)
-    ax.set_title("Slice {} ({}) — {:,} tumor cells ({:.1f}%)".format(
+    ax.set_title("Slice {} ({}) - {:,} tumor cells ({:.1f}%)".format(
         s, "control" if s in CONTROL else "tumor-bearing", int(t.sum()), 100 * t.mean()),
         fontsize=9.5, pad=4)
 
