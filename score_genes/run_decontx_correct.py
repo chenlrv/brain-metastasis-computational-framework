@@ -14,7 +14,8 @@ Workflow:
   python run_decontx_correct.py          # 'auto': export -> Rscript subprocess -> assemble
 
 decontX runs on the FULL slice (tumor + non-tumor) so the tumor/neuronal ambient
-pool is modelled; coarse Leiden clusters are passed as z. Every gene is kept --
+pool is modelled; the committed k-means labels in score_genes/decontx_clusters/
+(written by write_decontx_clusters.py) are passed as z. Every gene is kept --
 contamination is subtracted from the counts, not removed as features.
 Then re-run run_myeloid_stage2_cluster.py with USE_DECONTX = True.
 """
@@ -28,13 +29,11 @@ import anndata as ad
 import h5py
 import numpy as np
 import pandas as pd
-import scanpy as sc
 from scipy.io import mmread, mmwrite
 from scipy.sparse import csc_matrix, csr_matrix
 
 # All six slices are processed with the same grouping, so that the population prior
-# supplied to decontX is constructed identically everywhere (earlier runs mixed a
-# coarse Leiden partition on slices 1 and 3 with a 25-cluster partition elsewhere).
+# supplied to decontX is constructed identically everywhere.
 SLICES = {
     f"slice_{i}": f"D:/thesis-research/resources/cache/with_tumor_prediction/slice_{i}_adata.h5ad"
     for i in (1, 2, 3, 4, 5, 6)
@@ -43,11 +42,9 @@ OUT_DIR = "D:/thesis-research/resources/cache/decontx"
 R_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "run_decontx.R")
 RSCRIPT = ""   # set to the full path of Rscript.exe to override autodetection (auto mode)
 TUMOR_COL = "pred_tumor_XGBoost"
-COARSE_RES = 0.5
 CONTROL_PREFIXES = ("neg", "negprb", "blank", "falsecode", "systemcontrol")
-WRITE_CLUSTERS = True       # supply a coarse Leiden partition as decontX's z prior
-# Whole-slice Leiden exceeds available memory on slices 5 and 6; the cluster
-# labels for those slices are provided as deposited inputs (clusters.csv).
+WRITE_CLUSTERS = True       # supply the committed k-means partition as decontX's z prior
+CLUSTER_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "decontx_clusters")
 
 
 def _decode(a):
@@ -95,24 +92,6 @@ def _read_obs_bool(h5, col):
     if arr.dtype.kind in ("S", "O"):
         return np.isin(_decode(arr).astype(str), ["True", "1", "1.0", "TRUE", "true"])
     return arr.astype(bool)
-
-
-def coarse_clusters(adata):
-    """Quick whole-slice Leiden to hand decontX a population structure (z)."""
-    a = adata.copy()
-    sc.pp.normalize_total(a, target_sum=1e4)
-    sc.pp.log1p(a)
-    sc.pp.highly_variable_genes(a, n_top_genes=min(2000, a.n_vars - 1))
-    a = a[:, a.var.highly_variable].copy()          # subset -> avoid dense scale OOM
-    sc.tl.pca(a, n_comps=min(30, a.n_vars - 1), zero_center=False)
-    sc.pp.neighbors(a, n_neighbors=15)
-    try:
-        sc.tl.leiden(a, resolution=COARSE_RES, flavor="igraph",
-                     n_iterations=2, directed=False)
-    except Exception as e:
-        print(f"  leiden(igraph) failed ({e}); default flavor")
-        sc.tl.leiden(a, resolution=COARSE_RES)
-    return a.obs["leiden"].astype(int).to_numpy()
 
 
 def find_rscript():
@@ -176,9 +155,12 @@ def export_slice(name, path):
     mmwrite(os.path.join(work, "counts.mtx"), adata.X.T.tocsr().astype(np.int32))
     cfile = os.path.join(work, "clusters.csv")
     if WRITE_CLUSTERS:
-        print(f"{name}: {adata.shape}; coarse Leiden for decontX z ...")
-        z = coarse_clusters(adata)
-        pd.DataFrame({"cluster": z}).to_csv(cfile, index=False)
+        src = os.path.join(CLUSTER_DIR, f"{name}_clusters.csv")
+        z = pd.read_csv(src)["cluster"]
+        if len(z) != adata.n_obs:
+            raise ValueError(f"{name}: {len(z)} labels in {src} != {adata.n_obs} cells")
+        shutil.copyfile(src, cfile)
+        print(f"{name}: {adata.shape}; z <- {src}")
     else:
         if os.path.exists(cfile):
             os.remove(cfile)   # no z -> decontX self-clusters in R

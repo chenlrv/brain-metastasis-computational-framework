@@ -149,20 +149,16 @@ conda run -n thesis_research python thesis_plots/make_dq_fig_lyve1.py           
 conda run -n thesis_research python fov_qc_slice1.py                                   # FOV QC, slide L321
 ```
 
-Ambient-RNA correction with DecontX. The export step writes fresh cluster labels, but
-the labels used in the thesis cannot be regenerated deterministically (whole-slice
-Leiden exceeds available memory on the large slices), so copy the committed labels
-into place before running DecontX:
+Ambient-RNA correction with DecontX. All six slices use the same k-means partition
+(30 truncated-SVD components, k = 25) as DecontX's population groups; the labels are
+committed in `score_genes/decontx_clusters/` and the export step copies them into place:
 
 ```bash
 conda run -n thesis_research python score_genes/run_decontx_correct.py export
-for i in 1 2 3 4 5 6; do
-  cp score_genes/decontx_clusters/slice_${i}_clusters.csv \
-     resources/cache/decontx/slice_${i}_work/clusters.csv
-done
 Rscript score_genes/run_decontx.R resources/cache/decontx
 conda run -n thesis_research python score_genes/run_decontx_correct.py assemble
 conda run -n thesis_research python thesis_plots/make_dq_fig_decontx.py                # Figure 19
+conda run -n thesis_research python thesis_plots/decontx_partition_sensitivity.py      # partition sensitivity, slice 1
 ```
 
 Transcript reassignment on five slice-1 fields of view:

@@ -29,6 +29,7 @@
 | — | Cluster partitions supplied to DecontX | `score_genes/write_decontx_clusters.py`<sup>d</sup> | `score_genes/decontx_clusters/slice_{1..6}_clusters.csv` |
 | — | Ambient-RNA estimation and correction (DecontX) | `score_genes/run_decontx_correct.py` (export and assembly); `score_genes/run_decontx.R` (DecontX)<sup>e</sup> | `slice_{1..6}_decontx.h5ad`; `decontx_contamination.csv` |
 | Figure 19 | Probe positivity before and after DecontX correction | `thesis_plots/make_dq_fig_decontx.py` | `dq_fig_decontx.png`; `decontx_before_after.csv` |
+| — | DecontX partition sensitivity (k-means k = 10, 25, 50 and a five-cluster Leiden partition, slice 1) | `thesis_plots/decontx_partition_sensitivity.py` | `decontx_partition_sensitivity.csv` |
 | — | Transcript reassignment and its parameter sweep | `agents/segmentation/03_filter_tx.py`, `04_reseg_reassign.py`, `05_prior_sweep.py`; purity metric in `agents/segmentation/seg_metrics.py` | per-FOV before/after marker-purity metrics |
 | Figure 20 | Myeloid marker purity before and after reassignment, and under parameter sweeps | `thesis_plots/make_dq_fig_reassign.py`<sup>f</sup> | `dq_fig_reassign.png` |
 | Figure 21 | Spatial distribution of the tumor-cell calls, all six slices | `thesis_plots/make_dq_fig_tumor_spatial.py` | `dq_fig_tumor_spatial.png` |
@@ -38,7 +39,7 @@ Every figure, table, and analysis step in this thesis and the script that produc
 <sup>a</sup>Written to `outputs/<run_id>/<sample_id>/`, where `run_id` is a fresh identifier generated on each pipeline run (`run_pipeline.py`), so these files have no stable path.
 <sup>b</sup>Values are hardcoded in `make_nature_tables.py` rather than read from the analysis outputs.
 <sup>c</sup>The script filename numbering predates the thesis figure numbering and does not match it.
-<sup>d</sup>The partitions are a DecontX input, not an output, and are not regenerated deterministically by a re-run; they are provided in the repository so that the correction can be reproduced exactly.
+<sup>d</sup>The partitions are a DecontX input, not an output; they are provided in the repository so that the correction can be reproduced exactly.
 <sup>e</sup>DecontX is run from R (celda). The Python driver exports the count matrix and cluster labels, calls the R script, and assembles the corrected matrix; corrected counts are rounded to integers on assembly.
 <sup>f</sup>Panel values are measured results transcribed into the plotting script rather than read from the sweep outputs at render time.
 

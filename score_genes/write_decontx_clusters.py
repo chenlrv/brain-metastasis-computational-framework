@@ -4,9 +4,9 @@ decontX only runs its own UMAP + cell-type estimation when no `z` is supplied, a
 that internal step blows up (std::bad_alloc) on the large slices. Supplying `z`
 skips it entirely.
 
-The original slices 1/3 used a scanpy Leiden prior, whose neighbour-graph step OOMs
-at this cell count. Here the same job is done with TruncatedSVD + MiniBatchKMeans,
-which never builds an N x N graph and stays well inside RAM. decontX only needs a
+A scanpy Leiden prior was not used: its neighbour-graph step OOMs at this cell count.
+TruncatedSVD + MiniBatchKMeans never builds an N x N graph and stays well inside
+RAM, and the same partition is applied to all six slices. decontX only needs a
 coarse population partition, not a biologically tuned clustering.
 
 Row order/count matches the exported counts.mtx exactly (same kept-cell mask).
