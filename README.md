@@ -21,14 +21,13 @@ run and what each stage needs.
 Analyses are implemented in Python and R.
 
 ```bash
-conda create -n thesis_research python=3.11
+conda create -n thesis_research python=3.12.13
 conda activate thesis_research
 pip install -r requirements.txt
 ```
 
-> **Caveat.** `requirements.txt` pins no versions — every entry is a `>=` range — so this
-> does not reproduce the exact environment the results were generated in. See
-> "Known gaps".
+`requirements.txt` pins the exact Python package versions the thesis results were
+generated with, for the scripts listed in Table S1.
 
 All Python entry points are then run through that environment:
 
@@ -36,8 +35,24 @@ All Python entry points are then run through that environment:
 conda run -n thesis_research python <script>
 ```
 
-R scripts (SingleR, decontX) require R 4.5 with `SingleR` 2.12.0, `SingleCellExperiment`,
-`scater`, `scuttle`, `Seurat`, `celldex`, and `celda` (for decontX).
+R scripts (SingleR, decontX) were run with R 4.5.2 and these package versions:
+
+| Package | Version |
+|---|---|
+| SingleR | 2.12.0 |
+| celda (DecontX) | 1.26.0 |
+| TabulaMurisSenisData | 1.16.0 |
+| SingleCellExperiment | 1.32.0 |
+| SummarizedExperiment | 1.40.0 |
+| scuttle | 1.20.0 |
+| scater | 1.38.0 |
+| celldex | 1.20.0 |
+| Seurat | 5.4.0 |
+| Matrix | 1.7.4 |
+| BiocParallel | 1.44.0 |
+| data.table | 1.18.2.1 |
+| ggplot2 | 4.0.2 |
+| ggrepel | 0.9.6 |
 
 Fixed random seeds are set inside the scripts that use stochastic methods; the
 classifier comparison uses seed 42 (Table 3 of the thesis).
@@ -216,9 +231,8 @@ depends on them.
 These are open items, listed so that the state of the repository is not overstated.
 Each is also flagged in Supplementary Table S1.
 
-- **No `environment.yml`.** `requirements.txt` exists but pins nothing — every entry is
-  a `>=` range, so it does not reproduce an environment. Needs `pip freeze` output or a
-  conda lock file, plus an R `renv.lock` or committed `sessionInfo()`.
+- **No R lock file.** R package versions are listed in section 1 but there is no
+  `renv.lock`, so the R environment is not restored automatically.
 - **Pipeline outputs have no stable path.** `run_pipeline.py` generates a fresh
   `uuid4()` as `run_id` on every run, so Stage 0 figures land in a new
   `outputs/<run_id>/<sample_id>/` directory each time and cannot be cited or diffed.
@@ -274,8 +288,8 @@ cells in total (4,267 / 6,272 / 5,039 / 5,295).
 
 Processed per-slice single-cell data, the assembled SingleR reference objects and the
 raw CosMx exports (transcript tables and segmentation masks) are available from the
-author on request. The cluster labels supplied to DecontX, which cannot be regenerated
-deterministically, are included in `score_genes/decontx_clusters/`.
+author on request. The cluster labels supplied to DecontX are included in
+`score_genes/decontx_clusters/`.
 
 All animal procedures, tumor implantation, tissue processing, and histological
 preparation were performed by Mr. Avinoam Ratzabi, Tel Aviv University, in accordance
