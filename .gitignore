@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# editor / OS
+.idea/
+.vscode/
+.Rhistory
+.DS_Store
+
+# data and rendered output never belong in this repository
+*.h5ad
+*.rds
+*.RDS
+*.mtx
+*.npy
+*.zarr/
+*.png
+*.pdf
+*.pptx
+*.html
+*.egg-info/
+build/
