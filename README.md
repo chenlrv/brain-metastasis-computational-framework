@@ -141,7 +141,9 @@ python analysis/02_tumor_identification/xgboost_default_sensitivity.py  # XGBoos
 python analysis/02_tumor_identification/table03_heldout_specificity.py  # Table 3
 python analysis/02_tumor_identification/fig09_14_spatial_refinement.py  # Figures 9-14
 python analysis/02_tumor_identification/fig15_final_tumor_calls.py      # Figure 15
-python analysis/02_tumor_identification/stage1_threshold_sensitivity.py # threshold calibration
+python analysis/02_tumor_identification/stage1_threshold_sensitivity.py # threshold counts and anchor purity
+python analysis/02_tumor_identification/stage1_threshold_heldout.py    # threshold sensitivity, retrained (candidate floor x margin)
+python analysis/02_tumor_identification/stage1_anchor_floor_heldout.py # threshold sensitivity, retrained (anchor floor)
 ```
 
 SingleR is run against a three-part reference (brain structural, brain immune, and an

@@ -1,7 +1,7 @@
 # Build report
 Source: `D:\thesis-research`
 
-52 thesis files, 7 data files, 276 draft files.
+54 thesis files, 7 data files, 277 draft files.
 
 ## `thesis_research/__init__.py` -> `thesis_research/__init__.py`
 
@@ -221,6 +221,27 @@ unchanged
 +BASE_DIR = pathlib.Path(PROJECT_ROOT_STR)
 ```
 
+## `thesis_plots/stage1_threshold_heldout.py` -> `analysis/02_tumor_identification/stage1_threshold_heldout.py`
+
+```diff
+@@ -36 +36 @@
+-Run: conda run -n thesis_research python thesis_plots/stage1_threshold_heldout.py
++Run: conda run -n thesis_research python analysis/02_tumor_identification/stage1_threshold_heldout.py
+@@ -37,0 +38 @@
++from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
+@@ -54 +55 @@
+-BASE_DIR = pathlib.Path(r"D:\thesis-research")
++BASE_DIR = pathlib.Path(PROJECT_ROOT_STR)
+```
+
+## `thesis_plots/stage1_anchor_floor_heldout.py` -> `analysis/02_tumor_identification/stage1_anchor_floor_heldout.py`
+
+```diff
+@@ -11 +11 @@
+-Run: conda run -n thesis_research python thesis_plots/stage1_anchor_floor_heldout.py
++Run: conda run -n thesis_research python analysis/02_tumor_identification/stage1_anchor_floor_heldout.py
+```
+
 ## `thesis_plots/figure_4_spatial_refinement.py` -> `analysis/02_tumor_identification/fig09_14_spatial_refinement.py`
 
 ```diff
@@ -235,6 +256,9 @@ unchanged
 @@ -204 +205 @@
 -    # xgboost 3.2.0 library defaults -- see xgb_default_sensitivity.py.
 +    # xgboost 3.2.0 library defaults -- see xgboost_default_sensitivity.py.
+@@ -208 +209 @@
+-    # scikit-learn defaults (100 trees), as in figure_3_model_comparison.py.
++    # scikit-learn defaults (100 trees), as in fig08_classifier_comparison.py.
 ```
 
 ## `thesis_plots/control_specificity_validation.py` -> `analysis/02_tumor_identification/table03_heldout_specificity.py`

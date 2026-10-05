@@ -72,6 +72,8 @@ MAP = {
     "thesis_plots/figure_3_model_comparison.py": f"{A2}/fig08_classifier_comparison.py",
     "thesis_plots/xgb_default_sensitivity.py": f"{A2}/xgboost_default_sensitivity.py",
     "thesis_plots/stage1_threshold_sensitivity.py": f"{A2}/stage1_threshold_sensitivity.py",
+    "thesis_plots/stage1_threshold_heldout.py": f"{A2}/stage1_threshold_heldout.py",
+    "thesis_plots/stage1_anchor_floor_heldout.py": f"{A2}/stage1_anchor_floor_heldout.py",
     "thesis_plots/figure_4_spatial_refinement.py": f"{A2}/fig09_14_spatial_refinement.py",
     "thesis_plots/control_specificity_validation.py": f"{A2}/table03_heldout_specificity.py",
     "thesis_plots/final_xgboost_refinement.py": f"{A2}/fig15_final_tumor_calls.py",

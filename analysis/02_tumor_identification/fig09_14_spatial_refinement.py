@@ -206,9 +206,8 @@ def fit_classifiers(X_ref, y_ref):
     xgb_model = XGBClassifier(
         random_state=RANDOM_STATE, n_jobs=-1, verbosity=0, eval_metric="logloss",
     )
-    rf_model = RandomForestClassifier(
-        n_estimators=300, random_state=RANDOM_STATE, n_jobs=-1,
-    )
+    # scikit-learn defaults (100 trees), as in fig08_classifier_comparison.py.
+    rf_model = RandomForestClassifier(random_state=RANDOM_STATE, n_jobs=-1)
     logreg_knn_clf = LogisticRegression(max_iter=3000, random_state=RANDOM_STATE)
 
     print("\nFitting classifiers on the joint reference pool...")

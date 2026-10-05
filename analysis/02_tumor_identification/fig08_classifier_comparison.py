@@ -167,9 +167,9 @@ def compute_oof_probabilities(X_ref, y_ref):
     xgb_model = XGBClassifier(
         random_state=RANDOM_STATE, n_jobs=-1, verbosity=0, eval_metric="logloss",
     )
-    rf_model = RandomForestClassifier(
-        n_estimators=300, random_state=RANDOM_STATE, n_jobs=-1,
-    )
+    # scikit-learn defaults (100 trees). 300 and 500 trees changed out-of-fold
+    # accuracy and held-out false positives by about one point.
+    rf_model = RandomForestClassifier(random_state=RANDOM_STATE, n_jobs=-1)
     logreg_knn_clf = LogisticRegression(max_iter=3000, random_state=RANDOM_STATE)
 
     print("\nComputing OOF probabilities (5-fold stratified CV)...")
