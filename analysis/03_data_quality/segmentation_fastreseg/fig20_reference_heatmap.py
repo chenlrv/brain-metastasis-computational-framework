@@ -13,7 +13,7 @@ from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
 import pathlib
 
 HERE = pathlib.Path(__file__).resolve().parent
-S1 = pathlib.Path(PROJECT_ROOT_STR + "/agents/outputs/segmentation_fastreseg_slice1")
+S1 = pathlib.Path(PROJECT_ROOT_STR + "/automation/outputs/segmentation_fastreseg_slice1")
 
 src = (HERE / "fig20_heatmap_base.py").read_text(encoding="utf-8")
 replacements = [

@@ -5,7 +5,7 @@ their gene in their cell, and (2) the share of Lyve1-positive cells carrying
 exactly one Lyve1 transcript. These support the statement that per-cell
 expression profiles are too sparse for cell-level transcript reassignment.
 Inputs: the slice-1 transcript files of 05_prepare_slice1_inputs.py (vendor cell
-assignment). Writes only agents/outputs/segmentation_fastreseg_slice1/eval_qcpassed/sparsity.json
+assignment). Writes only automation/outputs/segmentation_fastreseg_slice1/eval_qcpassed/sparsity.json
 (must not exist).
 
 Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/08_sparsity_slice1.py
@@ -18,7 +18,7 @@ import anndata as ad
 import pandas as pd
 
 ROOT = pathlib.Path(PROJECT_ROOT_STR)
-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
+B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
 OUT = B / "eval_qcpassed" / "sparsity.json"
 
 

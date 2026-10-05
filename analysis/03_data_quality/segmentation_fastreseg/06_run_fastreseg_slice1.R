@@ -11,7 +11,7 @@
 #
 # FastReseg and its dependencies are installed in a separate library on D:
 # (D:/R-libs/fastreseg). Writes only to
-# agents/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
+# automation/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
 #
 # Run: Rscript analysis/03_data_quality/segmentation_fastreseg/06_run_fastreseg_slice1.R
 PROJECT_ROOT <- Sys.getenv("THESIS_PROJECT_ROOT")
@@ -24,8 +24,8 @@ suppressPackageStartupMessages({
   library(data.table)
 })
 
-base <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg_slice1")
-counts_dir <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg/inputs")
+base <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg_slice1")
+counts_dir <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg/inputs")
 inp <- file.path(base, "inputs")
 out <- file.path(base, "fastreseg_out")
 if (dir.exists(out)) stop(out, " already exists; refusing to overwrite")

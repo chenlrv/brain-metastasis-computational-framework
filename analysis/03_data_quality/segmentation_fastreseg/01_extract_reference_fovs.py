@@ -16,7 +16,7 @@ import time
 import pandas as pd
 
 TX = L321_TX_FILE
-OUT = PROJECT_ROOT_STR + r"/agents/outputs/segmentation/tx_by_fov"
+OUT = PROJECT_ROOT_STR + r"/automation/outputs/segmentation/tx_by_fov"
 os.makedirs(OUT, exist_ok=True)
 
 CHOSEN = [451, 512, 514, 515, 523]

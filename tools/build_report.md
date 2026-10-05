@@ -516,12 +516,18 @@ unchanged
 -      r"\L321__1__31_12_2025_12_32_59_204\flatFiles\L321\L321_tx_file.csv")
 -OUT = r"D:\thesis-research\agents\outputs\segmentation\tx_by_fov"
 +TX = L321_TX_FILE
-+OUT = PROJECT_ROOT_STR + r"/agents/outputs/segmentation/tx_by_fov"
++OUT = PROJECT_ROOT_STR + r"/automation/outputs/segmentation/tx_by_fov"
 ```
 
 ## `agents/segmentation/fastreseg/01_prep_inputs.py` -> `analysis/03_data_quality/segmentation_fastreseg/02_prepare_reference_inputs.py`
 
 ```diff
+@@ -11 +11 @@
+-the five FOVs (agents/outputs/segmentation/tx_by_fov/), restricted to the 958
++the five FOVs (automation/outputs/segmentation/tx_by_fov/), restricted to the 958
+@@ -14 +14 @@
+-Writes only to agents/outputs/segmentation_fastreseg/inputs/ and refuses to run
++Writes only to automation/outputs/segmentation_fastreseg/inputs/ and refuses to run
 @@ -17 +17 @@
 -Run: conda run -n thesis_research python agents/segmentation/fastreseg/01_prep_inputs.py
 +Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/02_prepare_reference_inputs.py
@@ -530,6 +536,11 @@ unchanged
 @@ -27 +28 @@
 -ROOT = pathlib.Path(r"D:/thesis-research")
 +ROOT = pathlib.Path(PROJECT_ROOT_STR)
+@@ -29,2 +30,2 @@
+-TX_DIR = ROOT / "agents/outputs/segmentation/tx_by_fov"
+-OUT = ROOT / "agents/outputs/segmentation_fastreseg/inputs"
++TX_DIR = ROOT / "automation/outputs/segmentation/tx_by_fov"
++OUT = ROOT / "automation/outputs/segmentation_fastreseg/inputs"
 ```
 
 ## `agents/segmentation/fastreseg/02_run_fastreseg.R` -> `analysis/03_data_quality/segmentation_fastreseg/03_run_fastreseg_reference_fovs.R`
@@ -538,6 +549,9 @@ unchanged
 @@ -3 +3 @@
 -# Inputs come from 01_prep_inputs.py. Only data-specific settings are given:
 +# Inputs come from 02_prepare_reference_inputs.py. Only data-specific settings are given:
+@@ -12 +12 @@
+-# agents/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
++# automation/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
 @@ -14 +14,3 @@
 -# Run: Rscript agents/segmentation/fastreseg/02_run_fastreseg.R
 +# Run: Rscript analysis/03_data_quality/segmentation_fastreseg/03_run_fastreseg_reference_fovs.R
@@ -548,42 +562,49 @@ unchanged
 +.libPaths(c(Sys.getenv("FASTRESEG_RLIB"), .libPaths()))
 @@ -23 +25 @@
 -base <- "D:/thesis-research/agents/outputs/segmentation_fastreseg"
-+base <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg")
++base <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg")
 ```
 
 ## `agents/segmentation/fastreseg/04_export_scores.R` -> `analysis/03_data_quality/segmentation_fastreseg/04_export_reference_scores.R`
 
 ```diff
-@@ -3 +3 @@
+@@ -3,3 +3,5 @@
 -# 02_run_fastreseg.R, for plotting. Writes only to
-+# 03_run_fastreseg_reference_fovs.R, for plotting. Writes only to
-@@ -5 +5,3 @@
+-# agents/outputs/segmentation_fastreseg/figures/ (the file must not exist).
 -.libPaths(c("D:/R-libs/fastreseg", .libPaths()))
++# 03_run_fastreseg_reference_fovs.R, for plotting. Writes only to
++# automation/outputs/segmentation_fastreseg/figures/ (the file must not exist).
 +PROJECT_ROOT <- Sys.getenv("THESIS_PROJECT_ROOT")
 +if (!nzchar(PROJECT_ROOT)) stop("Set THESIS_PROJECT_ROOT to the project data root (see README)")
 +.libPaths(c(Sys.getenv("FASTRESEG_RLIB"), .libPaths()))
 @@ -7 +9 @@
 -base <- "D:/thesis-research/agents/outputs/segmentation_fastreseg"
-+base <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg")
++base <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg")
 ```
 
 ## `agents/segmentation/fastreseg/slice1_01_prep_inputs.py` -> `analysis/03_data_quality/segmentation_fastreseg/05_prepare_slice1_inputs.py`
 
 ```diff
-@@ -6 +6 @@
+@@ -6,2 +6,2 @@
 -the same as for the five-FOV run (01_prep_inputs.py) and are read from there, not
+-copied. Writes only to agents/outputs/segmentation_fastreseg_slice1/inputs/,
 +the same as for the five-FOV run (02_prepare_reference_inputs.py) and are read from there, not
++copied. Writes only to automation/outputs/segmentation_fastreseg_slice1/inputs/,
 @@ -10 +10 @@
 -Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_01_prep_inputs.py
 +Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/05_prepare_slice1_inputs.py
 @@ -11,0 +12 @@
 +from thesis_research.config import PROJECT_ROOT_STR, L321_TX_FILE  # noqa: E402
-@@ -18,3 +19,2 @@
+@@ -18,5 +19,4 @@
 -ROOT = pathlib.Path("D:/thesis-research")
 -TX = pathlib.Path("D:/20251214_CosMx_ReuvenStein/20251214_CosMx_ReuvenStein.tar/Analysis/"
 -                  "L321__1__31_12_2025_12_32_59_204/flatFiles/L321/L321_tx_file.csv")
+-FIVE = ROOT / "agents/outputs/segmentation_fastreseg/inputs"
+-OUT = ROOT / "agents/outputs/segmentation_fastreseg_slice1/inputs"
 +ROOT = pathlib.Path(PROJECT_ROOT_STR)
 +TX = pathlib.Path(L321_TX_FILE)
++FIVE = ROOT / "automation/outputs/segmentation_fastreseg/inputs"
++OUT = ROOT / "automation/outputs/segmentation_fastreseg_slice1/inputs"
 ```
 
 ## `agents/segmentation/fastreseg/slice1_02_run_fastreseg.R` -> `analysis/03_data_quality/segmentation_fastreseg/06_run_fastreseg_slice1.R`
@@ -597,6 +618,9 @@ unchanged
 @@ -5 +5 @@
 -# Inputs come from 01_prep_inputs.py. Only data-specific settings are given:
 +# Inputs come from 02_prepare_reference_inputs.py. Only data-specific settings are given:
+@@ -14 +14 @@
+-# agents/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
++# automation/outputs/segmentation_fastreseg/fastreseg_out/, which must not exist.
 @@ -16 +16,3 @@
 -# Run: Rscript agents/segmentation/fastreseg/02_run_fastreseg.R
 +# Run: Rscript analysis/03_data_quality/segmentation_fastreseg/06_run_fastreseg_slice1.R
@@ -608,8 +632,8 @@ unchanged
 @@ -25,2 +27,2 @@
 -base <- "D:/thesis-research/agents/outputs/segmentation_fastreseg_slice1"
 -counts_dir <- "D:/thesis-research/agents/outputs/segmentation_fastreseg/inputs"
-+base <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg_slice1")
-+counts_dir <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg/inputs")
++base <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg_slice1")
++counts_dir <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg/inputs")
 ```
 
 ## `agents/segmentation/fastreseg/slice1_04_evaluate_qcpassed.py` -> `analysis/03_data_quality/segmentation_fastreseg/07_evaluate_slice1.py`
@@ -620,27 +644,41 @@ unchanged
 -(slice1_02_run_fastreseg.R; transcripts it trimmed are absent). Tumor cells are
 +(05_prepare_slice1_inputs.py). "After" = FastReseg's updated tables
 +(06_run_fastreseg_slice1.R; transcripts it trimmed are absent). Tumor cells are
+@@ -22 +22 @@
+-Writes only to agents/outputs/segmentation_fastreseg_slice1/eval/ (must not exist).
++Writes only to automation/outputs/segmentation_fastreseg_slice1/eval/ (must not exist).
+@@ -24 +24 @@
+-Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_03_evaluate.py
++Run: conda run -n thesis_research python drafts/automation/segmentation/fastreseg/slice1_03_evaluate.py
 @@ -25,0 +26 @@
 +from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
-@@ -32 +33 @@
+@@ -32,3 +33,3 @@
 -ROOT = pathlib.Path("D:/thesis-research")
+-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
+-SCORES = ROOT / "agents/outputs/segmentation_fastreseg/figures/score_matrix.csv"
 +ROOT = pathlib.Path(PROJECT_ROOT_STR)
++B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
++SCORES = ROOT / "automation/outputs/segmentation_fastreseg/figures/score_matrix.csv"
 ```
 
 ## `agents/segmentation/fastreseg/slice1_05_sparsity.py` -> `analysis/03_data_quality/segmentation_fastreseg/08_sparsity_slice1.py`
 
 ```diff
-@@ -7 +7 @@
+@@ -7,2 +7,2 @@
 -Inputs: the slice-1 transcript files of slice1_01_prep_inputs.py (vendor cell
+-assignment). Writes only agents/outputs/segmentation_fastreseg_slice1/eval_qcpassed/sparsity.json
 +Inputs: the slice-1 transcript files of 05_prepare_slice1_inputs.py (vendor cell
++assignment). Writes only automation/outputs/segmentation_fastreseg_slice1/eval_qcpassed/sparsity.json
 @@ -11 +11 @@
 -Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_05_sparsity.py
 +Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/08_sparsity_slice1.py
 @@ -12,0 +13 @@
 +from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
-@@ -19 +20 @@
+@@ -19,2 +20,2 @@
 -ROOT = pathlib.Path("D:/thesis-research")
+-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
 +ROOT = pathlib.Path(PROJECT_ROOT_STR)
++B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
 ```
 
 ## `agents/segmentation/fastreseg/slice1_06_figure20.py` -> `analysis/03_data_quality/segmentation_fastreseg/fig20_reference_heatmap.py`
@@ -661,7 +699,7 @@ unchanged
 +from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
 @@ -15 +16 @@
 -S1 = pathlib.Path("D:/thesis-research/agents/outputs/segmentation_fastreseg_slice1")
-+S1 = pathlib.Path(PROJECT_ROOT_STR + "/agents/outputs/segmentation_fastreseg_slice1")
++S1 = pathlib.Path(PROJECT_ROOT_STR + "/automation/outputs/segmentation_fastreseg_slice1")
 @@ -17 +18 @@
 -src = (HERE / "06_figure_A2.py").read_text(encoding="utf-8")
 +src = (HERE / "fig20_heatmap_base.py").read_text(encoding="utf-8")
@@ -686,7 +724,7 @@ unchanged
 +from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
 @@ -24 +25 @@
 -FIG = pathlib.Path("D:/thesis-research/agents/outputs/segmentation_fastreseg/figures")
-+FIG = pathlib.Path(PROJECT_ROOT_STR + "/agents/outputs/segmentation_fastreseg/figures")
++FIG = pathlib.Path(PROJECT_ROOT_STR + "/automation/outputs/segmentation_fastreseg/figures")
 ```
 
 ## `agents/segmentation/fastreseg/slice1_07_figS1_groups.py` -> `analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py`
@@ -695,14 +733,19 @@ unchanged
 @@ -6 +6 @@
 -slice1_04_evaluate_qcpassed.py), the same as the top bar of Figure 20; tumor cells
 +07_evaluate_slice1.py), the same as the top bar of Figure 20; tumor cells
+@@ -10 +10 @@
+-Writes only agents/outputs/segmentation_fastreseg_slice1/figures/figS1_cell_groups_slice1.png
++Writes only automation/outputs/segmentation_fastreseg_slice1/figures/figS1_cell_groups_slice1.png
 @@ -12 +12 @@
 -Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_07_figS1_groups.py
 +Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py
 @@ -13,0 +14 @@
 +from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
-@@ -24 +25 @@
+@@ -24,2 +25,2 @@
 -ROOT = pathlib.Path("D:/thesis-research")
+-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
 +ROOT = pathlib.Path(PROJECT_ROOT_STR)
++B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
 ```
 
 ## `thesis_plots/make_dq_fig_tumor_spatial.py` -> `analysis/03_data_quality/fig21_tumor_spatial.py`

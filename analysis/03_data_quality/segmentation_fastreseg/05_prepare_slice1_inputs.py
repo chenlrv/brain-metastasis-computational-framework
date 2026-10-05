@@ -4,7 +4,7 @@ Streams the raw L321 transcript table and writes one transcript file per slice-1
 FOV, restricted to the 958 panel genes (negative and system-control probes
 removed), with a transcript ID per row. The count matrix and cluster labels are
 the same as for the five-FOV run (02_prepare_reference_inputs.py) and are read from there, not
-copied. Writes only to agents/outputs/segmentation_fastreseg_slice1/inputs/,
+copied. Writes only to automation/outputs/segmentation_fastreseg_slice1/inputs/,
 which must not exist.
 
 Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/05_prepare_slice1_inputs.py
@@ -18,8 +18,8 @@ import pandas as pd
 
 ROOT = pathlib.Path(PROJECT_ROOT_STR)
 TX = pathlib.Path(L321_TX_FILE)
-FIVE = ROOT / "agents/outputs/segmentation_fastreseg/inputs"
-OUT = ROOT / "agents/outputs/segmentation_fastreseg_slice1/inputs"
+FIVE = ROOT / "automation/outputs/segmentation_fastreseg/inputs"
+OUT = ROOT / "automation/outputs/segmentation_fastreseg_slice1/inputs"
 COLS = ["fov", "cell_ID", "cell", "x_global_px", "y_global_px", "z", "target"]
 
 

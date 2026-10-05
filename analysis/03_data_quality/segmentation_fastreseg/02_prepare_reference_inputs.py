@@ -8,10 +8,10 @@ FastReseg (Wu et al. 2025; NanoString R package) needs
 Counts and clusters are those of all QC-passed slice-1 cells; the clusters are
 the vendor's own InSituType cell typing shipped with the export, so no
 clustering choice is made here. Transcripts are the raw vendor transcripts of
-the five FOVs (agents/outputs/segmentation/tx_by_fov/), restricted to the 958
+the five FOVs (automation/outputs/segmentation/tx_by_fov/), restricted to the 958
 panel genes (negative and system-control probes removed).
 
-Writes only to agents/outputs/segmentation_fastreseg/inputs/ and refuses to run
+Writes only to automation/outputs/segmentation_fastreseg/inputs/ and refuses to run
 if that folder already holds files.
 
 Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/02_prepare_reference_inputs.py
@@ -27,8 +27,8 @@ import scipy.sparse as sp
 
 ROOT = pathlib.Path(PROJECT_ROOT_STR)
 COUNTS_H5AD = ROOT / "resources/cache/with_tumor_prediction_final/slice_1_adata.h5ad"
-TX_DIR = ROOT / "agents/outputs/segmentation/tx_by_fov"
-OUT = ROOT / "agents/outputs/segmentation_fastreseg/inputs"
+TX_DIR = ROOT / "automation/outputs/segmentation/tx_by_fov"
+OUT = ROOT / "automation/outputs/segmentation_fastreseg/inputs"
 FOVS = [451, 512, 514, 515, 523]
 CLUST_COL = "RNA_Basic.run_Cell.Typing.InSituType.1_1_clusters"
 

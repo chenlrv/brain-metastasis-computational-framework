@@ -93,7 +93,7 @@ data folder, laid out as:
   outputs/cell_annotation/              SingleR references and score tables
     D122_Reference_Avinoam/             GSE103548 LLC1 bulk reference
   thesis_plots/                         figures and result tables
-  agents/outputs/                       FastReseg inputs and results
+  automation/outputs/                       FastReseg inputs and results
 ```
 
 Every script reads its inputs from, and writes its outputs to, this folder. Point the

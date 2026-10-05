@@ -2,7 +2,7 @@
 
 THESIS_PROJECT_ROOT (required)
     Folder holding the data and results, laid out as described in the README
-    (resources/, outputs/cell_annotation/, thesis_plots/, agents/outputs/).
+    (resources/, outputs/cell_annotation/, thesis_plots/, automation/outputs/).
     Every analysis script reads its inputs from, and writes its outputs to,
     paths under this folder. There is deliberately no default, so that no
     script can write anywhere the user has not chosen.

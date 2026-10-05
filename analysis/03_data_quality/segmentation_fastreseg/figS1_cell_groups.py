@@ -7,7 +7,7 @@ assignments are FastReseg's own (eval_qcpassed/cell_groups_nontumor.csv from
 (final Stage-3 calls) are not assigned a group and are drawn in gray. Coordinates
 are the global tissue coordinates (CenterX/Y_global_px).
 
-Writes only agents/outputs/segmentation_fastreseg_slice1/figures/figS1_cell_groups_slice1.png
+Writes only automation/outputs/segmentation_fastreseg_slice1/figures/figS1_cell_groups_slice1.png
 (must not exist).
 Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py
 """
@@ -23,7 +23,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 ROOT = pathlib.Path(PROJECT_ROOT_STR)
-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
+B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
 OUT = B / "figures" / "figS1_cell_groups_slice1.png"
 PX_UM = 0.12028
 GREY, COLOR = "#DADADA", "#1F5BFF"

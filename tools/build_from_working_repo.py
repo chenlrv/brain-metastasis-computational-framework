@@ -254,6 +254,11 @@ def transform(old, new, text):
                 k += 1
             lines.insert(k, R_HEADER)
             text = "".join(lines)
+    # output folders live under automation/outputs/ in the project data folder
+    # (a link to the working repo's agents/outputs/)
+    text = text.replace("agents/outputs", "automation/outputs")
+    # remaining references to working-repo code point at its copy in drafts/
+    text = text.replace("agents/segmentation/", "drafts/automation/segmentation/")
     # what is left of the old root is prose in docstrings/comments (check() verifies)
     return text.replace("D:/thesis-research", "$THESIS_PROJECT_ROOT")
 
@@ -342,7 +347,8 @@ def main():
     drafts = sorted(f for f in set(tracked) | set(untracked)
                     if f.endswith(DRAFT_EXT) and f not in thesis and f not in SKIP)
     for old in drafts:
-        new = "drafts/WORKING_REPO_README.md" if old == "README.md" else f"drafts/{old}"
+        rel = "automation/" + old[len("agents/"):] if old.startswith("agents/") else old
+        new = "drafts/WORKING_REPO_README.md" if old == "README.md" else f"drafts/{rel}"
         write(DST / new, (src / old).read_bytes(), a.update, written)
 
     report.insert(2, f"\n{len(MAP)} thesis files, {len(DATA)} data files, {len(drafts)} draft files.\n")

@@ -19,9 +19,9 @@ Reports, pooled over the slice:
     tdTomato-positive cells fall in the group(s) where a tdTomato transcript
     scores below -2 (needs figures/score_matrix.csv from the five-FOV run, whose
     reference is identical).
-Writes only to agents/outputs/segmentation_fastreseg_slice1/eval/ (must not exist).
+Writes only to automation/outputs/segmentation_fastreseg_slice1/eval/ (must not exist).
 
-Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_03_evaluate.py
+Run: conda run -n thesis_research python drafts/automation/segmentation/fastreseg/slice1_03_evaluate.py
 """
 from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
 import json
@@ -31,8 +31,8 @@ import anndata as ad
 import pandas as pd
 
 ROOT = pathlib.Path(PROJECT_ROOT_STR)
-B = ROOT / "agents/outputs/segmentation_fastreseg_slice1"
-SCORES = ROOT / "agents/outputs/segmentation_fastreseg/figures/score_matrix.csv"
+B = ROOT / "automation/outputs/segmentation_fastreseg_slice1"
+SCORES = ROOT / "automation/outputs/segmentation_fastreseg/figures/score_matrix.csv"
 OUT = B / "eval_qcpassed"
 GENES = ["Lyve1", "Mrc1", "Cd163", "tdTomato"]
 QC_PASSED = set()

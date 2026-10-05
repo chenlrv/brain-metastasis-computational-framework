@@ -22,7 +22,7 @@ mpl.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
 
-FIG = pathlib.Path(PROJECT_ROOT_STR + "/agents/outputs/segmentation_fastreseg/figures")
+FIG = pathlib.Path(PROJECT_ROOT_STR + "/automation/outputs/segmentation_fastreseg/figures")
 OUT = FIG / "fig_A7_reference_heatmap.png"   # A2-A6: earlier renders (A6: borders partly hidden)
 EDGE = "#1F5BFF"   # border marking scores below the cutoff
 CUT = -2.0

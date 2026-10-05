@@ -1,12 +1,12 @@
 # Export FastReseg's transcript-score matrix (genes x cell types), computed with
 # FastReseg's own scoreGenesInRef from the reference profiles of the run in
 # 03_run_fastreseg_reference_fovs.R, for plotting. Writes only to
-# agents/outputs/segmentation_fastreseg/figures/ (the file must not exist).
+# automation/outputs/segmentation_fastreseg/figures/ (the file must not exist).
 PROJECT_ROOT <- Sys.getenv("THESIS_PROJECT_ROOT")
 if (!nzchar(PROJECT_ROOT)) stop("Set THESIS_PROJECT_ROOT to the project data root (see README)")
 .libPaths(c(Sys.getenv("FASTRESEG_RLIB"), .libPaths()))
 suppressMessages(library(FastReseg))
-base <- paste0(PROJECT_ROOT, "/agents/outputs/segmentation_fastreseg")
+base <- paste0(PROJECT_ROOT, "/automation/outputs/segmentation_fastreseg")
 out <- file.path(base, "figures")
 dir.create(out, showWarnings = FALSE)
 f <- file.path(out, "score_matrix.csv")
