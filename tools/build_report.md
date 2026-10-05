@@ -1,7 +1,7 @@
 # Build report
 Source: `D:\thesis-research`
 
-54 thesis files, 7 data files, 277 draft files.
+55 thesis files, 7 data files, 277 draft files.
 
 ## `thesis_research/__init__.py` -> `thesis_research/__init__.py`
 
@@ -687,6 +687,22 @@ unchanged
 @@ -24 +25 @@
 -FIG = pathlib.Path("D:/thesis-research/agents/outputs/segmentation_fastreseg/figures")
 +FIG = pathlib.Path(PROJECT_ROOT_STR + "/agents/outputs/segmentation_fastreseg/figures")
+```
+
+## `agents/segmentation/fastreseg/slice1_07_figS1_groups.py` -> `analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py`
+
+```diff
+@@ -6 +6 @@
+-slice1_04_evaluate_qcpassed.py), the same as the top bar of Figure 20; tumor cells
++07_evaluate_slice1.py), the same as the top bar of Figure 20; tumor cells
+@@ -12 +12 @@
+-Run: conda run -n thesis_research python agents/segmentation/fastreseg/slice1_07_figS1_groups.py
++Run: conda run -n thesis_research python analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py
+@@ -13,0 +14 @@
++from thesis_research.config import PROJECT_ROOT_STR  # noqa: E402
+@@ -24 +25 @@
+-ROOT = pathlib.Path("D:/thesis-research")
++ROOT = pathlib.Path(PROJECT_ROOT_STR)
 ```
 
 ## `thesis_plots/make_dq_fig_tumor_spatial.py` -> `analysis/03_data_quality/fig21_tumor_spatial.py`

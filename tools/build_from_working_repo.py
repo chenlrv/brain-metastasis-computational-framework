@@ -99,6 +99,7 @@ MAP = {
     "agents/segmentation/fastreseg/slice1_05_sparsity.py": f"{FR}/08_sparsity_slice1.py",
     "agents/segmentation/fastreseg/slice1_06_figure20.py": f"{FR}/fig20_reference_heatmap.py",
     "agents/segmentation/fastreseg/06_figure_A2.py": f"{FR}/fig20_heatmap_base.py",
+    "agents/segmentation/fastreseg/slice1_07_figS1_groups.py": f"{FR}/figS1_cell_groups.py",
     "thesis_plots/make_dq_fig_tumor_spatial.py": f"{A3}/fig21_tumor_spatial.py",
 }
 # committed input data copied with the code that reads it

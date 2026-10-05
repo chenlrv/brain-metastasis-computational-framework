@@ -195,6 +195,7 @@ Rscript analysis/03_data_quality/segmentation_fastreseg/06_run_fastreseg_slice1.
 python  analysis/03_data_quality/segmentation_fastreseg/07_evaluate_slice1.py   # read-outs
 python  analysis/03_data_quality/segmentation_fastreseg/08_sparsity_slice1.py   # sparsity
 python  analysis/03_data_quality/segmentation_fastreseg/fig20_reference_heatmap.py  # Figure 20
+python  analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py       # Figure S1
 python  analysis/03_data_quality/fig21_tumor_spatial.py                          # Figure 21
 ```
 

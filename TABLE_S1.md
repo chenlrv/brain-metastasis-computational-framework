@@ -34,6 +34,7 @@
 | — | Segmentation-error correction with FastReseg, all 257 FOVs of slice 1 | `analysis/03_data_quality/segmentation_fastreseg/05_prepare_slice1_inputs.py`, `06_run_fastreseg_slice1.R` | `agents/outputs/segmentation_fastreseg_slice1/fastreseg_out/` |
 | — | Read-outs before and after correction and per-cell sparsity, QC-passed non-tumor cells | `analysis/03_data_quality/segmentation_fastreseg/07_evaluate_slice1.py`, `08_sparsity_slice1.py` | `agents/outputs/segmentation_fastreseg_slice1/eval_qcpassed/summary.json`, `sparsity.json` |
 | Figure 20 | FastReseg reference scores for the anomaly genes across the 12 cell groups | `analysis/03_data_quality/segmentation_fastreseg/fig20_reference_heatmap.py`<sup>j</sup> | `agents/outputs/segmentation_fastreseg_slice1/figures/fig20_reference_heatmap_slice1.png` |
+| Figure S1 | Location of the 12 FastReseg cell groups in slice 1 | `analysis/03_data_quality/segmentation_fastreseg/figS1_cell_groups.py` | `agents/outputs/segmentation_fastreseg_slice1/figures/figS1_cell_groups_slice1.png` |
 | Figure 21 | Spatial distribution of the tumor-cell calls, all six slices | `analysis/03_data_quality/fig21_tumor_spatial.py` | `thesis_plots/dq_fig_tumor_spatial.png` |
 
 Every figure, table, and analysis step in this thesis and the script that produced it. Script paths are relative to the repository root; output paths are relative to the project data folder set by `THESIS_PROJECT_ROOT` (README, section 2). Running the scripts in the order given in the README regenerates each output from the processed data.
